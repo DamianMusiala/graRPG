@@ -1,110 +1,209 @@
 # -*- coding: UTF-8 -*-
+
 from classtools import AttrDisplay
 import random
 
 
-class Creature(AttrDisplay):
+class Character(AttrDisplay):
+    """
+    A class that defines the general character.
 
-    def __init__(self, name, agility=50, constitution=50, speed=50, isAlive=True):
+    :method remove_health: Modifies in place health and is_alive parameters
+    :method deal_damage: Calculates and returns the value of damage
+    """
+
+    def __init__(self,
+                 name,
+                 agility=50,
+                 constitution=50,
+                 is_alive=True,
+                 chance_of_dodge=0,
+                 remove_health_mod=0):
+        """
+        Character class constructor.
+        :param name: Character name
+        :type name: string
+        :param agility: It affects the order of movement
+        :type agility: integer
+        :param is_alive: Indicates whether the character is alive or not
+        :type is_alive: boolean
+        :param remove_health_mod: Modifies damage taken
+        :type remove_health_mod: integer
+        """
         self.name = name
         self.agility = agility
         self.constitution = constitution
-        self.speed = speed
-        self.isAlive = isAlive
-        self.health = self.agility * 2
+        self.is_alive = is_alive
+        self.health = self.constitution * 2
+        self.remove_health_mod = remove_health_mod
 
-    def removeHealth(self, other):
-        taking_damage = other if other >= 0 else 0
-        self.health -= taking_damage
+    def remove_health(self, other):
+        """
+        Modifies in place health and is_alive parameters
+        :param other: Damage dealt by opponent
+        :type other: integer
+        :return: None
+        """
+        damage_received = other if other >= 0 else 0
+        self.health -= damage_received
         if self.health < 1:
             self.health = 0
-            self.isAlive = False
-        print(f'{self.name} traci {taking_damage} punktów życia')
+            self.is_alive = False
+        print(f'{self.name} loses {damage_received} health points.')
 
-    def dealDamage(self):
+    def deal_damage(self):
+        """
+        Calculates and returns the value of damage. Draws a value from 1 to 10.
+        :return: damage (integer)
+        """
         damage = random.randint(1, 10)
-        print(f'{self.name} zadaje {damage} obrażeń')
+        print(f'{self.name} deals {damage} damage.')
         return damage
 
 
-class Warrior(Creature):
-
+class Warrior(Character):
+    """
+    A class that defines the warrior character.
+    Warrior has +10 constitution and deals damage increased by 2
+    """
     def __init__(self, name):
-        Creature.__init__(self, name, agility=60)
+        """
+        Warrior class constructor.
+        :param name: Warrior name
+        """
+        Character.__init__(self, name, constitution=60)
 
-    def dealDamage(self):
-        return Creature.dealDamage(self) + 2  # to mi się do końca nie podoba -
-        # powinna być zmienna modyfikator w klasie i podklasie
+    def deal_damage(self):
+        """
+        Modifies deal_damage method from parent class. Add damage_modyfikator.
+        :return: damage (integer)
+        """
+        damage_modyfikator = 2
+        print(f'{self.name} deals {damage_modyfikator} pionts extra-damage.')
+        return Character.deal_damage(self) + damage_modyfikator
 
 
-class Knight(Creature):
-
+class Knight(Character):
+    """
+    A class that defines the knight character.
+    The knight takes damage reduced by 2 and has a agility reduced by 10.
+    """
     def __init__(self, name):
-        Creature.__init__(self, name, speed=40)
+        """
+        Knight class constructor.
+        :param name: Knight name.
+        """
+        Character.__init__(self, name, agility=40)
 
-    def removeHealth(self, other):
-        Creature.removeHealth(self, other - 2)  # zamienic na zmienną modyfikator
+    def remove_health(self, other):
+        """
+        Modifies remove_health methon from parent class.
+        Reduces damage taken by 2.
+        :param other: damage taken
+        :return: None
+        """
+        remove_health_modyfikator = 2
+        Character.remove_health(self, other - remove_health_modyfikator)
 
 
-class Thief(Creature):
-
+class Thief(Character):
+    """
+    A class that defines the thief character.
+    The thief has +10 agility and has a 10% chance to dodge, which negates the damage taken.
+    """
     def __init__(self, name):
-        Creature.__init__(self, name, speed=60)
+        """
+        Thief class constructor.
+        :param name: Thief name.
+        """
+        Character.__init__(self, name, agility=60)
 
-    def removeHealth(self, other):
-        chance = random.randint(1, 10)
-        if chance == 5:
-            print(f'{self.name} robi unik')
-            Creature.removeHealth(self, other=0)
+    def remove_health(self, other):
+        """
+        The method overrides the method from the parent class.
+        :param other: Damage dealt by opponent
+        :return: None
+        """
+        chance_of_dodge = 10
+        los = random.choice(range(1, 101))
+        if los <= chance_of_dodge:
+            print(f'{self.name} dodges.')
+            Character.remove_health(self, other=0)
         else:
-            Creature.removeHealth(self, other)
+            Character.remove_health(self, other)
 
 
 class Battle:
-    def __init__(self, obj1, obj2):
-        self.obj1 = obj1
-        self.obj2 = obj2
+    """
+    Battle class.
+    Battle beetwen two chatacters.
+
+    :method round: The method describing the course of the round.
+    :method fight: The method describing the course of the fight.
+    """
+    def __init__(self, character_a, character_b):
+        self.character_a = character_a
+        self.character_b = character_b
 
     def round(self):
-        if self.obj1.speed > self.obj2.speed:
-            self.obj2.removeHealth(self.obj1.dealDamage())
-            self.obj1.removeHealth(self.obj2.dealDamage())
-        elif self.obj2.speed > self.obj1.speed:
-            self.obj1.removeHealth(self.obj2.dealDamage())
-            self.obj2.removeHealth(self.obj1.dealDamage())
+        """
+        The method describing the course of the round.
+        A character with a higher agility parameter starts the round and deals damage.
+        Then the opponent deals damage.
+        If the agility parameters are equal, the method randomizes the starting character.
+        :return: None
+        """
+        if self.character_a.agility > self.character_b.agility:
+            self.character_b.remove_health(self.character_a.deal_damage())
+            self.character_a.remove_health(self.character_b.deal_damage())
+        elif self.character_b.agility > self.character_a.agility:
+            self.character_a.remove_health(self.character_b.deal_damage())
+            self.character_b.remove_health(self.character_a.deal_damage())
         else:
-            self.obj2.removeHealth(self.obj1.dealDamage())  # wiem, że to nie do końca tak powinno być
-            self.obj1.removeHealth(self.obj2.dealDamage())
+            character_list = [self.character_a, self.character_b]
+            first = random.choice(character_list)
+            if first == character_list[0]:
+                self.character_b.remove_health(self.character_a.deal_damage())
+                self.character_a.remove_health(self.character_b.deal_damage())
+            else:
+                self.character_a.remove_health(self.character_b.deal_damage())
+                self.character_b.remove_health(self.character_a.deal_damage())
 
-    def fight(self):
+    def fight(self, number_of_rounds=20):
+        """
+        The method describing the course of the fight.
+        The fight lasts 20 rounds or until one of the characters dies.
+
+        :param number_of_rounds: Number od rounds.
+        :return: None
+        """
         n = 1
-        while n <= 20:
-            if self.obj1.isAlive == True and self.obj2.isAlive == True:
-                print(f'Runda: {n}')
+        while n <= number_of_rounds:
+            if self.character_a.is_alive is True and self.character_b.is_alive is True:
+                print(f'\nRound: {n}')
                 self.round()
                 n += 1
             else:
-                if not self.obj1.isAlive:
-                    print(f'{self.obj1.name} ginie.')
-                elif not self.obj2.isAlive:
-                    print(f'{self.obj2.name} ginie.')
+                if not self.character_a.is_alive:
+                    print(f'{self.character_a.name} is killed.')
+                elif not self.character_b.is_alive:
+                    print(f'{self.character_b.name} is killed.')
                 break
-        if self.obj1.health > self.obj2.health:
-            print(f'Wygrywa: {self.obj1.name}')
-        elif self.obj2.health > self.obj1.health:
-            print(f'Wygrywa: {self.obj2.name}')
+        print('\n### RESULTS ###')
+        if self.character_a.health > self.character_b.health:
+            print(f'{self.character_a.name} wins!!!')
+        elif self.character_b.health > self.character_a.health:
+            print(f'{self.character_b.name} wins!!!')
         else:
-            print('REMIS!')
-
-# zad. 5 Ekwipunek
+            print('DRAW!!!!')
 
 
 if __name__ == '__main__':
-    cre01 = Knight('Optimus')
-    cre02 = Thief('Megatron')
-    pojedynek = Battle(cre01, cre02)
-    pojedynek.fight()
-    box = [cre01, cre02]
-    print('\n### Wyniki ####')
-    for i in box:
-        print(i)
+    character01 = Knight('Optimus')
+    character02 = Warrior('Megatron')
+    print(character01)
+    print(character02)
+    battle01 = Battle(character01, character02)
+    battle01.fight(5)
+    print(character01)
+    print(character02)
