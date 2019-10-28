@@ -1,6 +1,10 @@
 # -*- coding: UTF-8 -*-
 
 
+"""
+pass
+"""
+
 from classtools import AttrDisplay
 from battle import Battle
 import random

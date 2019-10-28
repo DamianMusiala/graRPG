@@ -1,5 +1,9 @@
 # -*- coding: UTF-8 -*-
 
+"""
+pass
+"""
+
 import random
 
 
