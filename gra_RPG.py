@@ -81,8 +81,9 @@ class Warrior(Character):
         :return: damage (integer)
         """
         damage_modyfikator = 2
-        print(f'{self.name} deals {damage_modyfikator} pionts extra-damage.')
-        return Character.deal_damage(self) + damage_modyfikator
+        damage = Character.deal_damage(self) + damage_modyfikator
+        print(f'{self.name} deals {damage_modyfikator} additional damage pionts.')
+        return damage
 
 
 class Knight(Character):
