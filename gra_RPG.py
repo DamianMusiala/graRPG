@@ -130,7 +130,6 @@ class Thief(Character):
         los = random.choice(range(1, 101))
         if los <= chance_of_dodge:
             print(f'{self.name} dodges.')
-            Character.remove_health(self, other=0)
         else:
             Character.remove_health(self, other)
 
@@ -141,6 +140,6 @@ if __name__ == '__main__':
     print(character01)
     print(character02)
     battle01 = Battle(character01, character02)
-    battle01.fight(5)
+    battle01.fight()
     print(character01)
     print(character02)

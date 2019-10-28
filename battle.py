@@ -43,7 +43,7 @@ class Battle:
                 self.character_a.remove_health(self.character_b.deal_damage())
                 self.character_b.remove_health(self.character_a.deal_damage())
 
-    def fight(self, number_of_rounds=20):
+    def fight(self):
         """
         The method describing the course of the fight.
         The fight lasts 20 rounds or until one of the characters dies.
@@ -52,7 +52,7 @@ class Battle:
         :return: None
         """
         n = 1
-        while n <= number_of_rounds:
+        while True:
             if self.character_a.is_alive() and self.character_b.is_alive():
                 print(f'\nRound: {n}')
                 self.round()
