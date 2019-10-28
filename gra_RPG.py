@@ -82,7 +82,7 @@ class Warrior(Character):
         """
         damage_modyfikator = 2
         damage = Character.deal_damage(self) + damage_modyfikator
-        print(f'{self.name} deals {damage_modyfikator} additional damage pionts.')
+        print(f'{self.name} deals {damage_modyfikator} additional damage pionts')
         return damage
 
 
