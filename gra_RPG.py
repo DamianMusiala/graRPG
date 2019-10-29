@@ -53,9 +53,10 @@ class Character(AttrDisplay):
         """
         damage_received = other if other >= 0 else 0
         self.health -= damage_received
+        print(f'{self.name} loses {damage_received} health points.')
         if self.health < 1:
             self.health = 0
-        print(f'{self.name} loses {damage_received} health points.')
+            print(f'{self.name} is killed.')
 
     def deal_damage(self):
         """
@@ -104,7 +105,7 @@ class Knight(Character):
         """
         Character.__init__(self, name)
         Character.constitution_mod(self, 0)
-        Character.agility_mod(self, 0)
+        Character.agility_mod(self, -10)
 
     def remove_health(self, other):
         """
@@ -137,20 +138,21 @@ class Thief(Character):
         :param other: Damage dealt by opponent
         :return: None
         """
-        chance_of_dodge = 10
+        chance_of_dodge = 20
         los = random.choice(range(1, 101))
         if los <= chance_of_dodge:
-            print(f'{self.name} dodges.')
+            print(f'{self.name} dodges!!!')
         else:
             Character.remove_health(self, other)
 
 
 if __name__ == '__main__':
     character01 = Knight('Optimus')
-    character02 = Warrior('Megatron')
+    character02 = Knight('Megatron')
     print(character01)
     print(character02)
-    battle01 = Battle(character01, character02)
+    player_list = [character01, character02]
+    battle01 = Battle(player_list)
     battle01.fight()
     print(character01)
     print(character02)

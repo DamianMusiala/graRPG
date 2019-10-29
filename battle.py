@@ -1,8 +1,7 @@
-# -*- coding: UTF-8 -*-
-
 """
 pass
 """
+
 
 import random
 
@@ -12,61 +11,68 @@ class Battle:
     Battle class.
     Battle beetwen two chatacters.
 
-    :method round: The method describing the course of the round.
-    :method fight: The method describing the course of the fight.
+    :param players: Player list.
+    :method number_of_players: Calculates number oof players.
+    :method order: Determines the order of movement.
+    :method round: Specifies the behavior during the round.
+    :method fight: Manages the number of rounds and indicates the winner.
     """
-    def __init__(self, character_a, character_b):
-        self.character_a = character_a
-        self.character_b = character_b
+    def __init__(self, players):
+        """
+        Battle class constructor.
+        :param players: Player list.
+        """
+        self.players = players
+
+    def number_of_players(self):    # w założeniu, że w przyszłości będzie wiecej graczy
+        """
+        :return: Lenght of the player list = number of players
+        """
+        return len(self.players)
+
+    def order(self):
+        """
+        A character with a higher agility parameter is the first player.
+        If the agility parameters are equal, the method randomizes the first player..
+        :return: Modyfied player list.
+        """
+        if self.players[0].agility != self.players[1].agility:
+            sorted(self.players, key=lambda player: player.agility, reverse=True)
+        else:
+            random.shuffle(self.players)
+        return self.players
 
     def round(self):
         """
         The method describing the course of the round.
         A character with a higher agility parameter starts the round and deals damage.
-        Then the opponent deals damage.
+        Then the opponent deals damage (if he can).
         If the agility parameters are equal, the method randomizes the starting character.
         :return: None
         """
-        if self.character_a.agility > self.character_b.agility:
-            self.character_b.remove_health(self.character_a.deal_damage())
-            self.character_a.remove_health(self.character_b.deal_damage())
-        elif self.character_b.agility > self.character_a.agility:
-            self.character_a.remove_health(self.character_b.deal_damage())
-            self.character_b.remove_health(self.character_a.deal_damage())
-        else:
-            character_list = [self.character_a, self.character_b]
-            first = random.choice(character_list)
-            if first == character_list[0]:
-                self.character_b.remove_health(self.character_a.deal_damage())
-                self.character_a.remove_health(self.character_b.deal_damage())
-            else:
-                self.character_a.remove_health(self.character_b.deal_damage())
-                self.character_b.remove_health(self.character_a.deal_damage())
+        arena = self.order()
+
+        arena[1].remove_health(arena[0].deal_damage())
+        if arena[1].is_alive():
+            arena[0].remove_health(arena[1].deal_damage())
 
     def fight(self):
         """
         The method describing the course of the fight.
-        The fight lasts 20 rounds or until one of the characters dies.
-
-        :param number_of_rounds: Number od rounds.
+        If both of the players are alive a round can be made.
         :return: None
         """
         n = 1
         while True:
-            if self.character_a.is_alive() and self.character_b.is_alive():
+            if self.players[0].is_alive() and self.players[1].is_alive():
                 print(f'\nRound: {n}')
                 self.round()
                 n += 1
             else:
-                if not self.character_a.is_alive():
-                    print(f'{self.character_a.name} is killed.')
-                elif not self.character_b.is_alive():
-                    print(f'{self.character_b.name} is killed.')
                 break
         print('\n### RESULTS ###')
-        if self.character_a.health > self.character_b.health:
-            print(f'{self.character_a.name} wins!!!')
-        elif self.character_b.health > self.character_a.health:
-            print(f'{self.character_b.name} wins!!!')
-        else:
-            print('DRAW!!!!')
+        if not self.players[0].is_alive() and not self.players[1].is_alive():
+            print('DRAW!!!')
+        for player in self.players:
+            if player.is_alive():
+                print(f'{player.name} wins!!!')
