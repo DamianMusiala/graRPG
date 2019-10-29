@@ -18,10 +18,7 @@ class Character(AttrDisplay):
     :method deal_damage: Calculates and returns the value of damage
     """
 
-    def __init__(self,
-                 name,
-                 agility=50,
-                 constitution=50):
+    def __init__(self, name, agility=50, constitution=50):
         """
         Character class constructor.
         :param name: Character name
@@ -32,7 +29,14 @@ class Character(AttrDisplay):
         self.name = name
         self.agility = agility
         self.constitution = constitution
+        self.health = 0
+
+    def constitution_mod(self, parameter):
+        self.constitution += parameter
         self.health = self.constitution * 2
+
+    def agility_mod(self, parameter):
+        self.agility += parameter
 
     def is_alive(self):
         """
@@ -73,16 +77,18 @@ class Warrior(Character):
         Warrior class constructor.
         :param name: Warrior name
         """
-        Character.__init__(self, name, constitution=60)
+        Character.__init__(self, name)
+        Character.constitution_mod(self, 10)
+        Character.agility_mod(self, 0)
 
     def deal_damage(self):
         """
-        Modifies deal_damage method from parent class. Add damage_modyfikator.
+        Modifies deal_damage method from parent class.
         :return: damage (integer)
         """
         damage_modyfikator = 2
         damage = Character.deal_damage(self) + damage_modyfikator
-        print(f'{self.name} deals {damage_modyfikator} additional damage pionts')
+        print(f'{self.name} deals {damage_modyfikator} additional damage points.')
         return damage
 
 
@@ -96,7 +102,9 @@ class Knight(Character):
         Knight class constructor.
         :param name: Knight name.
         """
-        Character.__init__(self, name, agility=40)
+        Character.__init__(self, name)
+        Character.constitution_mod(self, 0)
+        Character.agility_mod(self, 0)
 
     def remove_health(self, other):
         """
@@ -119,7 +127,9 @@ class Thief(Character):
         Thief class constructor.
         :param name: Thief name.
         """
-        Character.__init__(self, name, agility=60)
+        Character.__init__(self, name)
+        Character.constitution_mod(self, 0)
+        Character.agility_mod(self, 10)
 
     def remove_health(self, other):
         """
