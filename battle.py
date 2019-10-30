@@ -4,6 +4,7 @@ pass
 
 
 import random
+import characters
 
 
 class Battle:
@@ -37,7 +38,7 @@ class Battle:
         :return: Modyfied player list.
         """
         if self.players[0].agility != self.players[1].agility:
-            sorted(self.players, key=lambda player: player.agility, reverse=True)
+            self.players = sorted(self.players, key=lambda player: player.agility, reverse=True)
         else:
             random.shuffle(self.players)
         return self.players
@@ -62,6 +63,10 @@ class Battle:
         If both of the players are alive a round can be made.
         :return: None
         """
+        # displaying initial values
+        for player in self.players:
+            print(player)
+
         n = 1
         while True:
             if self.players[0].is_alive() and self.players[1].is_alive():
@@ -76,3 +81,24 @@ class Battle:
         for player in self.players:
             if player.is_alive():
                 print(f'{player.name} wins!!!')
+
+        # displaying end values
+        for player in self.players:
+            print(player)
+
+
+if __name__ == '__main__':
+    warrior1 = characters.Warrior('WARRIOR 1')
+    warrior2 = characters.Warrior('WARRIOR 2')
+    knight1 = characters.Knight('KNIGHT 1')
+    knight2 = characters.Knight('KNIGHT 2')
+    thief1 = characters.Thief('THIEF 1')
+    thief2 = characters.Thief('THIEF 2')
+    warriorVSwarrior = [warrior1, warrior2]
+    warriorVSknight = [warrior1, knight1]
+    warriorVSthief = [warrior1, thief1]
+    knightVSknight = [knight1, knight2]
+    knightVSthief = [knight1, thief1]
+    thiefVSthief = [thief1, thief2]
+    battle = Battle(warriorVSthief)
+    battle.fight()

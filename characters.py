@@ -6,7 +6,6 @@ pass
 """
 
 from classtools import AttrDisplay
-from battle import Battle
 import random
 
 
@@ -29,14 +28,14 @@ class Character(AttrDisplay):
         self.name = name
         self.agility = agility
         self.constitution = constitution
-        self.health = 0
+        self.health = self.calculate_health()
 
-    def constitution_mod(self, parameter):
-        self.constitution += parameter
-        self.health = self.constitution * 2
-
-    def agility_mod(self, parameter):
-        self.agility += parameter
+    def calculate_health(self):
+        """
+        Calculate characters health
+        :return: self.health
+        """
+        return self.constitution * 2
 
     def is_alive(self):
         """
@@ -78,9 +77,7 @@ class Warrior(Character):
         Warrior class constructor.
         :param name: Warrior name
         """
-        Character.__init__(self, name)
-        Character.constitution_mod(self, 10)
-        Character.agility_mod(self, 0)
+        Character.__init__(self, name, constitution=60)
 
     def deal_damage(self):
         """
@@ -103,9 +100,7 @@ class Knight(Character):
         Knight class constructor.
         :param name: Knight name.
         """
-        Character.__init__(self, name)
-        Character.constitution_mod(self, 0)
-        Character.agility_mod(self, -10)
+        Character.__init__(self, name, agility=40)
 
     def remove_health(self, other):
         """
@@ -128,9 +123,7 @@ class Thief(Character):
         Thief class constructor.
         :param name: Thief name.
         """
-        Character.__init__(self, name)
-        Character.constitution_mod(self, 0)
-        Character.agility_mod(self, 10)
+        Character.__init__(self, name, agility=60)
 
     def remove_health(self, other):
         """
@@ -144,15 +137,3 @@ class Thief(Character):
             print(f'{self.name} dodges!!!')
         else:
             Character.remove_health(self, other)
-
-
-if __name__ == '__main__':
-    character01 = Knight('Optimus')
-    character02 = Knight('Megatron')
-    print(character01)
-    print(character02)
-    player_list = [character01, character02]
-    battle01 = Battle(player_list)
-    battle01.fight()
-    print(character01)
-    print(character02)
