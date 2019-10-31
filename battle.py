@@ -10,7 +10,7 @@ import characters
 class Battle:
     """
     Battle class.
-    Battle beetwen two chatacters.
+    Battle between two characters.
 
     :param players: Player list.
     :method number_of_players: Calculates number oof players.
@@ -100,5 +100,5 @@ if __name__ == '__main__':
     knightVSknight = [knight1, knight2]
     knightVSthief = [knight1, thief1]
     thiefVSthief = [thief1, thief2]
-    battle = Battle(warriorVSthief)
+    battle = Battle(knightVSthief)
     battle.fight()

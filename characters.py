@@ -7,6 +7,7 @@ pass
 
 from classtools import AttrDisplay
 import random
+import decorators
 
 
 class Character(AttrDisplay):
@@ -17,18 +18,30 @@ class Character(AttrDisplay):
     :method deal_damage: Calculates and returns the value of damage
     """
 
-    def __init__(self, name, agility=50, constitution=50):
+    def __init__(self, name):
         """
         Character class constructor.
         :param name: Character name
         :type name: string
-        :param agility: It affects the order of movement
-        :type agility: integer
         """
         self.name = name
-        self.agility = agility
-        self.constitution = constitution
+        self.agility = self.agility()
+        self.constitution = self.constitution()
         self.health = self.calculate_health()
+
+    @staticmethod
+    def agility():
+        """
+        :return: default 50
+        """
+        return 50
+
+    @staticmethod
+    def constitution():
+        """
+        :return: default 50
+        """
+        return 50
 
     def calculate_health(self):
         """
@@ -77,17 +90,15 @@ class Warrior(Character):
         Warrior class constructor.
         :param name: Warrior name
         """
-        Character.__init__(self, name, constitution=60)
+        Character.__init__(self, name)
 
+    @decorators.general_mod(10)
+    def constitution(self):
+        return Character.constitution()
+
+    @decorators.general_mod(2)
     def deal_damage(self):
-        """
-        Modifies deal_damage method from parent class.
-        :return: damage (integer)
-        """
-        damage_modyfikator = 2
-        damage = Character.deal_damage(self) + damage_modyfikator
-        print(f'{self.name} deals {damage_modyfikator} additional damage points.')
-        return damage
+        return Character.deal_damage(self)
 
 
 class Knight(Character):
@@ -100,17 +111,15 @@ class Knight(Character):
         Knight class constructor.
         :param name: Knight name.
         """
-        Character.__init__(self, name, agility=40)
+        Character.__init__(self, name)
 
+    @decorators.general_mod(-10)
+    def agility(self):
+        return Character.agility()
+
+    @decorators.reduce_damage(-2)
     def remove_health(self, other):
-        """
-        Modifies remove_health methon from parent class.
-        Reduces damage taken by 2.
-        :param other: damage taken
-        :return: None
-        """
-        remove_health_modyfikator = 2
-        Character.remove_health(self, other - remove_health_modyfikator)
+        return Character.remove_health(self, other)
 
 
 class Thief(Character):
@@ -123,17 +132,13 @@ class Thief(Character):
         Thief class constructor.
         :param name: Thief name.
         """
-        Character.__init__(self, name, agility=60)
+        Character.__init__(self, name)
 
+    @decorators.general_mod(10)
+    def agility(self):
+        return Character.agility()
+
+    @decorators.dodge(10)
     def remove_health(self, other):
-        """
-        The method overrides the method from the parent class.
-        :param other: Damage dealt by opponent
-        :return: None
-        """
-        chance_of_dodge = 20
-        los = random.choice(range(1, 101))
-        if los <= chance_of_dodge:
-            print(f'{self.name} dodges!!!')
-        else:
-            Character.remove_health(self, other)
+        return Character.remove_health(self, other)
+
