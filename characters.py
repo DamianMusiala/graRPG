@@ -141,4 +141,3 @@ class Thief(Character):
     @decorators.dodge(10)
     def remove_health(self, other):
         return Character.remove_health(self, other)
-
