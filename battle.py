@@ -1,5 +1,8 @@
 """
-pass
+gracz powinien się składac z ekwipunku i charakteru
+ekwipunek nie opakowuje charakteru w oczekiwany sposób (albo ja tego nie potrafię)
+trzeba zastosować inny wzorzec projektowy niż dekorator do stworzenia gracza
+na razie gracz to tylko charakter :/
 """
 
 

@@ -92,12 +92,13 @@ class Warrior(Character):
         """
         Character.__init__(self, name)
 
-    @decorators.general_mod(10)
+    @decorators.GeneralMod(10)
     def constitution(self):
         return Character.constitution()
 
-    @decorators.general_mod(2)
+    @decorators.GeneralMod(2)
     def deal_damage(self):
+        print(f'{self.name} deals 2 additional damage points!!!')
         return Character.deal_damage(self)
 
 
@@ -113,11 +114,11 @@ class Knight(Character):
         """
         Character.__init__(self, name)
 
-    @decorators.general_mod(-10)
+    @decorators.GeneralMod(-10)
     def agility(self):
         return Character.agility()
 
-    @decorators.reduce_damage(-2)
+    @decorators.ReduceDamage(-2)
     def remove_health(self, other):
         return Character.remove_health(self, other)
 
@@ -134,10 +135,10 @@ class Thief(Character):
         """
         Character.__init__(self, name)
 
-    @decorators.general_mod(10)
+    @decorators.GeneralMod(10)
     def agility(self):
         return Character.agility()
 
-    @decorators.dodge(10)
+    @decorators.Dodge(25)
     def remove_health(self, other):
         return Character.remove_health(self, other)

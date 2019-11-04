@@ -1,44 +1,44 @@
 import random
 
 
-def general_mod(modifier):
+class GeneralMod:
     """
     A decorator wrapping any class method by adding an integer to it.
-    :param modifier: integer
-    :return: wrapped function
     """
-    def wrapper(func):
-        def inner(self, *attrs):
-            return func(self, *attrs) + modifier
-        return inner
-    return wrapper
+    def __init__(self, modifier):
+        self.modifier = modifier
+
+    def __call__(self, method):
+        def wrapper(*args):
+            return method(*args) + self.modifier
+        return wrapper
 
 
-def dodge(chance):
+class Dodge:
     """
     A decorator wrapping any class method by not calling it if a random parameter is smaller or equal than the modifier.
-    :param chance: modifier
-    :return: wrapped function
     """
-    def wrapper(func):
-        def inner(self, *attrs):
+    def __init__(self, chance):
+        self.chance = chance
+
+    def __call__(self, method):
+        def wrapper(method_self, *args):
             los = random.choice(range(1, 101))
-            if los <= chance:
-                print(f'{self.name} dodges!!!')
+            if los <= self.chance:
+                print(f'{method_self.name} dodges!!!')
             else:
-                return func(self, *attrs)
-        return inner
-    return wrapper
+                return method(method_self, *args)
+        return wrapper
 
 
-def reduce_damage(modifier):
+class ReduceDamage:
     """
     A decorator wrapping any class method by adding an integer to the 'other' argument in wrapped function.
-    :param modifier: integer
-    :return: wrapped function
     """
-    def wrapper(func):
-        def inner(self, other):
-            return func(self, other + modifier)
-        return inner
-    return wrapper
+    def __init__(self, modifier):
+        self.modifier = modifier
+
+    def __call__(self, method):
+        def wrapper(method_self, other):
+            return method(method_self, other + self.modifier)
+        return wrapper
