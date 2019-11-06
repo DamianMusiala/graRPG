@@ -8,6 +8,7 @@ na razie gracz to tylko charakter :/
 
 import random
 import characters
+import equipment
 
 
 class Battle:
@@ -40,7 +41,7 @@ class Battle:
         If the agility parameters are equal, the method randomizes the first player..
         :return: Modyfied player list.
         """
-        if self.players[0].agility != self.players[1].agility:
+        if self.players[0].final_stats()['agility'] != self.players[1].final_stats()['agility']:
             self.players = sorted(self.players, key=lambda player: player.agility, reverse=True)
         else:
             random.shuffle(self.players)
@@ -91,17 +92,28 @@ class Battle:
 
 
 if __name__ == '__main__':
+    standard_equipement = [equipment.Helm(),
+                           equipment.Armor(),
+                           equipment.Shoes(),
+                           equipment.Sword(),
+                           equipment.Shield()]
     warrior1 = characters.Warrior('WARRIOR 1')
+    warrior1.select_equipement(standard_equipement)
     warrior2 = characters.Warrior('WARRIOR 2')
+    warrior2.select_equipement(standard_equipement)
     knight1 = characters.Knight('KNIGHT 1')
+    knight1.select_equipement(standard_equipement)
     knight2 = characters.Knight('KNIGHT 2')
+    knight2.select_equipement(standard_equipement)
     thief1 = characters.Thief('THIEF 1')
+    thief1.select_equipement(standard_equipement)
     thief2 = characters.Thief('THIEF 2')
+    thief2.select_equipement(standard_equipement)
     warriorVSwarrior = [warrior1, warrior2]
     warriorVSknight = [warrior1, knight1]
     warriorVSthief = [warrior1, thief1]
     knightVSknight = [knight1, knight2]
     knightVSthief = [knight1, thief1]
     thiefVSthief = [thief1, thief2]
-    battle = Battle(knightVSthief)
+    battle = Battle(warriorVSthief)
     battle.fight()

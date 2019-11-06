@@ -8,10 +8,10 @@ pass
 from classtools import AttrDisplay
 import random
 import decorators
-import equipement
+import equipment
 
 
-class Character(AttrDisplay):
+class Character:
     """
     A class that defines the general character.
 
@@ -29,13 +29,11 @@ class Character(AttrDisplay):
         self.agility = self.agility()
         self.constitution = self.constitution()
         self.health = self.calculate_health()
-        self.equipement = {'head': equipement.Item,
-                           'torso': equipement.Item,
-                           'foot': equipement.Item,
-                           'right_hand': equipement.Item,
-                           'left_hand': equipement.Item}
-        # do tego słownika muszę przekazywać wyniki:
-        # np. self.equipement['head'] musi przekazywać obiekt (słownik???), który z kolei będzie miał w sobie self.agility, self.health itd.
+        self.equipment = {'head': equipment.Item,
+                           'torso': equipment.Item,
+                           'foot': equipment.Item,
+                           'right_hand': equipment.Item,
+                           'left_hand': equipment.Item}
 
     @staticmethod
     def agility():
@@ -62,7 +60,7 @@ class Character(AttrDisplay):
         """
         :return: boolean True is health is more than 0.
         """
-        return self.health > 0
+        return self.final_stats()['health'] > 0
 
     def remove_health(self, other):
         """
@@ -71,9 +69,12 @@ class Character(AttrDisplay):
         :type other: integer
         :return: None
         """
-        damage_received = other if other >= 0 else 0
+        equipment_bonus = 0
+        for i in self.equipment.values():
+            equipment_bonus += i.remove_health
+        damage_received = other + equipment_bonus if other + equipment_bonus >= 0 else 0
         self.health -= damage_received
-        print(f'{self.name} loses {damage_received} health points.')
+        print(f'{self.name} loses {damage_received} health points. Equipement bonus = {equipment_bonus}')
         if self.health < 1:
             self.health = 0
             print(f'{self.name} is killed.')
@@ -83,20 +84,51 @@ class Character(AttrDisplay):
         Calculates and returns the value of damage. Draws a value from 1 to 10.
         :return: damage (integer)
         """
-        damage = random.randint(1, 10)
-        print(f'{self.name} deals {damage} damage.')
+        equipment_damage = 0
+        for i in self.equipment.values():
+            equipment_damage += i.deal_damage
+        damage = random.randint(1, 10) + equipment_damage
+        print(f'{self.name} deals {damage} damage. Equipment damage = {equipment_damage}')
         return damage
+
+    def select_equipement(self, box):
+        """
+        Uzupełnić opis!!!
+        :return:
+        """
+        random.shuffle(box)
+        for i in box[:3]:
+            for j in self.equipment:
+                if i.body == j:
+                    self.equipment[j] = i
+                else:
+                    continue
 
     def final_stats(self):
         """
         Uzupełnić opis!!!
         :return:
         """
+        final_agility = 0
+        final_constitution = 0
+        final_health = 0
+        for i in self.equipment.values():
+            final_agility += i.agility
+            final_constitution += i.constitution
+            final_health += i.health
         result = {'name': self.name,
-                  'agility': self.agility,
-                  'constitution': self.constitution,
-                  'health': self.health + self.equipement['torso'].health}
+                  'agility': self.agility + final_agility,
+                  'constitution': self.constitution + final_constitution,
+                  'health': self.health + final_health,
+                  'equipment': self.equipment}
         return result
+
+    def __str__(self):
+        return f"///\nName: {self.name} > " \
+            f"Health: {self.final_stats()['health']} > " \
+            f"Agility: {self.final_stats()['agility']} > " \
+            f"Constitution: {self.final_stats()['constitution']}\n" \
+            f"Equipment: {self.final_stats()['equipment']}"
 
 
 class Warrior(Character):
@@ -104,6 +136,7 @@ class Warrior(Character):
     A class that defines the warrior character.
     Warrior has +10 constitution and deals damage increased by 2
     """
+
     def __init__(self, name):
         """
         Warrior class constructor.
@@ -126,6 +159,7 @@ class Knight(Character):
     A class that defines the knight character.
     The knight takes damage reduced by 2 and has a agility reduced by 10.
     """
+
     def __init__(self, name):
         """
         Knight class constructor.
@@ -147,6 +181,7 @@ class Thief(Character):
     A class that defines the thief character.
     The thief has +10 agility and has a 10% chance to dodge, which negates the damage taken.
     """
+
     def __init__(self, name):
         """
         Thief class constructor.
@@ -165,8 +200,9 @@ class Thief(Character):
 
 if __name__ == '__main__':
     char01 = Warrior('Damian')
-    print(type(char01.equipement['torso']))
-    char01.equipement['torso'] = equipement.Armor()
-    print(type(char01.equipement['torso']))
     print(char01.final_stats())
-
+    standard_eq = [equipment.Helm(), equipment.Armor(), equipment.Sword(), equipment.Shield(), equipment.Shoes()]
+    char01.select_equipement(standard_eq)
+    for i in char01.equipment.values():
+        print(i)
+    print(char01.final_stats())
