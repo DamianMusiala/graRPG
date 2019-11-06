@@ -8,6 +8,7 @@ pass
 from classtools import AttrDisplay
 import random
 import decorators
+import equipement
 
 
 class Character(AttrDisplay):
@@ -28,6 +29,13 @@ class Character(AttrDisplay):
         self.agility = self.agility()
         self.constitution = self.constitution()
         self.health = self.calculate_health()
+        self.equipement = {'head': equipement.Item,
+                           'torso': equipement.Item,
+                           'foot': equipement.Item,
+                           'right_hand': equipement.Item,
+                           'left_hand': equipement.Item}
+        # do tego słownika muszę przekazywać wyniki:
+        # np. self.equipement['head'] musi przekazywać obiekt (słownik???), który z kolei będzie miał w sobie self.agility, self.health itd.
 
     @staticmethod
     def agility():
@@ -78,6 +86,17 @@ class Character(AttrDisplay):
         damage = random.randint(1, 10)
         print(f'{self.name} deals {damage} damage.')
         return damage
+
+    def final_stats(self):
+        """
+        Uzupełnić opis!!!
+        :return:
+        """
+        result = {'name': self.name,
+                  'agility': self.agility,
+                  'constitution': self.constitution,
+                  'health': self.health + self.equipement['torso'].health}
+        return result
 
 
 class Warrior(Character):
@@ -142,3 +161,12 @@ class Thief(Character):
     @decorators.Dodge(25)
     def remove_health(self, other):
         return Character.remove_health(self, other)
+
+
+if __name__ == '__main__':
+    char01 = Warrior('Damian')
+    print(type(char01.equipement['torso']))
+    char01.equipement['torso'] = equipement.Armor()
+    print(type(char01.equipement['torso']))
+    print(char01.final_stats())
+
