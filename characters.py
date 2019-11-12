@@ -1,10 +1,3 @@
-# -*- coding: UTF-8 -*-
-
-
-"""
-pass
-"""
-
 from classtools import AttrDisplay
 import random
 import decorators
@@ -93,8 +86,7 @@ class Character:
 
     def select_equipement(self, box):
         """
-        Uzupełnić opis!!!
-        :return:
+        Draw three values ​​from the given list.
         """
         random.shuffle(box)
         for i in box[:3]:
@@ -106,8 +98,8 @@ class Character:
 
     def final_stats(self):
         """
-        Uzupełnić opis!!!
-        :return:
+        Collecting final character and equipment statistics
+        :return: statistics dictionary
         """
         final_agility = 0
         final_constitution = 0

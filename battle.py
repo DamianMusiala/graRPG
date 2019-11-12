@@ -1,11 +1,3 @@
-"""
-gracz powinien się składac z ekwipunku i charakteru
-ekwipunek nie opakowuje charakteru w oczekiwany sposób (albo ja tego nie potrafię)
-trzeba zastosować inny wzorzec projektowy niż dekorator do stworzenia gracza
-na razie gracz to tylko charakter :/
-"""
-
-
 import random
 import characters
 import equipment
@@ -115,5 +107,6 @@ if __name__ == '__main__':
     knightVSknight = [knight1, knight2]
     knightVSthief = [knight1, thief1]
     thiefVSthief = [thief1, thief2]
+
     battle = Battle(warriorVSthief)
     battle.fight()
