@@ -1,7 +1,10 @@
-from classtools import AttrDisplay
 import random
 import decorators
 import equipment
+import logging
+
+
+logger = logging.getLogger('Battle_logger')
 
 
 class Character:
@@ -67,10 +70,10 @@ class Character:
             equipment_bonus += i.remove_health
         damage_received = other + equipment_bonus if other + equipment_bonus >= 0 else 0
         self.health -= damage_received
-        print(f'{self.name} loses {damage_received} health points. Equipement bonus = {equipment_bonus}')
+        logger.info(f'{self.name} loses {damage_received} health points. Equipement bonus = {equipment_bonus}')
         if self.health < 1:
             self.health = 0
-            print(f'{self.name} is killed.')
+            logger.info(f'{self.name} is killed.')
 
     def deal_damage(self):
         """
@@ -81,7 +84,7 @@ class Character:
         for i in self.equipment.values():
             equipment_damage += i.deal_damage
         damage = random.randint(1, 10) + equipment_damage
-        print(f'{self.name} deals {damage} damage. Equipment damage = {equipment_damage}')
+        logger.info(f'{self.name} deals {damage} damage. Equipment damage = {equipment_damage}')
         return damage
 
     def select_equipement(self, box):
@@ -142,7 +145,7 @@ class Warrior(Character):
 
     @decorators.GeneralMod(2)
     def deal_damage(self):
-        print(f'{self.name} deals 2 additional damage points!!!')
+        logger.info(f'{self.name} deals 2 additional damage points!!!')
         return Character.deal_damage(self)
 
 
@@ -192,9 +195,9 @@ class Thief(Character):
 
 if __name__ == '__main__':
     char01 = Warrior('Damian')
-    print(char01.final_stats())
+    logger.info(char01.final_stats())
     standard_eq = [equipment.Helm(), equipment.Armor(), equipment.Sword(), equipment.Shield(), equipment.Shoes()]
     char01.select_equipement(standard_eq)
     for i in char01.equipment.values():
-        print(i)
-    print(char01.final_stats())
+        logger.info(i)
+    logger.info(char01.final_stats())

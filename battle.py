@@ -1,6 +1,12 @@
 import random
 import characters
 import equipment
+import os
+import platform
+import logging
+
+
+logger = logging.getLogger('Battle_logger')
 
 
 class Battle:
@@ -61,29 +67,49 @@ class Battle:
         """
         # displaying initial values
         for player in self.players:
-            print(player)
+            logger.info(player)
 
         n = 1
         while True:
             if self.players[0].is_alive() and self.players[1].is_alive():
-                print(f'\nRound: {n}')
+                logger.info(f'\nRound: {n}')
                 self.round()
                 n += 1
             else:
                 break
-        print('\n### RESULTS ###')
+        logger.info('\n### RESULTS ###')
         if not self.players[0].is_alive() and not self.players[1].is_alive():
-            print('DRAW!!!')
+            logger.info('DRAW!!!')
         for player in self.players:
             if player.is_alive():
-                print(f'{player.name} wins!!!')
+                logger.info(f'{player.name} wins!!!')
 
         # displaying end values
         for player in self.players:
-            print(player)
+            logger.info(player)
+
+
+def logger_sets():
+    if platform.platform().startswith('Windows'):
+        logging_file = os.path.join(os.getenv('HOMEDRIVE'), os.getenv('HOMEPATH'), 'rpg.log')
+    else:
+        logging_file = os.path.join(os.getenv('HOME'), 'rpg.log')
+    # create logger
+    logger = logging.getLogger('Battle_logger')
+    logger.setLevel(logging.INFO)
+    # create file handler and set level to debug
+    file_handler = logging.FileHandler(logging_file, mode='w')
+    file_handler.setLevel(logging.INFO)
+    # create formatter
+    formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s')
+    # add formatter to file_handler
+    file_handler.setFormatter(formatter)
+    # add file_handler to logger
+    logger.addHandler(file_handler)
 
 
 if __name__ == '__main__':
+    logger_sets()
     standard_equipement = [equipment.Helm(),
                            equipment.Armor(),
                            equipment.Shoes(),

@@ -1,4 +1,8 @@
 import random
+import logging
+
+
+logger = logging.getLogger('Battle_logger')
 
 
 class GeneralMod:
@@ -25,7 +29,7 @@ class Dodge:
         def wrapper(method_self, *args):
             los = random.choice(range(1, 101))
             if los <= self.chance:
-                print(f'{method_self.name} dodges!!!')
+                logger.info(f'{method_self.name} dodges!!!')
             else:
                 return method(method_self, *args)
         return wrapper
